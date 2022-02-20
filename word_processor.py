@@ -103,13 +103,13 @@ def main():
             "Proper Usage: <python3 word_processor.py <filename>>")
         return
 
-    infile = sys.argv[1]
-    if not os.path.exists(infile):
+    infilename = sys.argv[1]
+    if not os.path.exists(infilename):
         print("Error: input file specified does not exist.",
             "Proper Usage: <python3 word_processor.py <filename>>")
         return
 
-    WordSet(infile)
+    WordSet(infilename)
 
 
 if __name__ == "__main__":
