@@ -25,7 +25,7 @@ When Wordle rapidly became very popluar in late 2021 and early 2022, I often str
 All code contained is written in Python 3.8.10. I created all the code and files in this repository using my personal virtual machine, which runs the Ubuntu distribution of the Linux operating system, through the Sublime Text text editor and the Linux terminal window.
 
 ## Instructions
-Currently, the program can only be used directly through a terminal window. To run the program, simply enter `python3 wordle_solver.py all_word.txt.pkl` in the terminal. Now, begin entering the suggested words into the Wordle website and enter the result that wordle gives ('b' for a black/white letter, 'y' for a yellow letter, and 'g' for a green letter) in the order given into the terminal until the program guesses the correct word.
+Currently, the program can only be used directly through a terminal window. To run the program, first enter `python3 word_processor.py all_words.txt`, and then simply enter `python3 wordle_solver.py all_word.txt.pkl` in the terminal. Now, begin entering the suggested words into the Wordle website and enter the result that wordle gives ('b' for a black/white letter, 'y' for a yellow letter, and 'g' for a green letter) in the order given into the terminal until the program guesses the correct word.
 
 ## Example Usage
 ```
