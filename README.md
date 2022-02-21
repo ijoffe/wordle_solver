@@ -1,14 +1,14 @@
 # Wordle Solver
 
 ## Table of Contents
-* [General Info](#general-info)
+* [General Information](#general-information)
 * [Description](#description)
 * [Background](#background)
 * [Technologies](#technologies)
 * [Instructions](#instructions)
 * [Example Usage](#example-usage)
 
-## General Info
+## General Information
 
 
 ## Description

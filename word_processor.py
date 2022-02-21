@@ -110,6 +110,7 @@ def main():
         return
 
     WordSet(infilename)
+    return
 
 
 if __name__ == "__main__":
