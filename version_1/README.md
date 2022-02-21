@@ -1,4 +1,4 @@
-# Wordle Solver
+# Wordle Solver v1
 
 ## Table of Contents
 * [General Information](#general-information)

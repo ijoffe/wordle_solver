@@ -13,8 +13,7 @@ def main():
         "base_words.txt"
 
     Returns:
-        None, but continuallyr prints words to try until the word is found
-
+        None, but continually prints words to try until the word is found
     """
 
     # store file containing words as a list of strings of each word
