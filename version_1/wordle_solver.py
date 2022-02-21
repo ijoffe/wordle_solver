@@ -1,5 +1,7 @@
 # Made by Isaac Joffe
 
+# can be tested on the site https://www.nytimes.com/games/wordle/index.html
+
 
 def main():
     """
