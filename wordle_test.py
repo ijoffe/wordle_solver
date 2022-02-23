@@ -157,17 +157,20 @@ class WordSet():
         return
 
 
-def wordle_solve(infilename):
+def wordle_solve(word, infilename):
     """
     Guesses the secret word according to input corresponding to the output of
     the game Wordle.
 
     Arguments:
-        infilename: string
-            the name of the file containing all possible words
+        word: string
+            the word that is being solved
+        infilename1: string
+            the name of the file containing the data on all possible words
 
     Returns:
-        None, but continually prints words to try until the word is found
+        number: integer
+            the number of guesses the solver took to solve the word
     """
 
     valid_words = WordSet(infilename)
@@ -182,20 +185,17 @@ def wordle_solve(infilename):
             print("There was an error in the program.")
             break    # invalid input led to no words being left, exit program
 
-        print("Number of possible words:", len(valid_words.wordset))
         if len(valid_words.wordset) > len(all_words.wordset) / 500 + 1:
             test_word = all_words.wordset[0]["word"]
         else:
             test_word = valid_words.wordset[0]["word"]
 
-        print("Now try:", test_word)    # tell user what to guess next
-        result = input("Enter result: ")    # obtain response to the guess
+        result = wordle(word, test_word)    # obtain response to the guess
         results[0] += 1    # one more guess has been entered
         results.append(result)    # make note of result of guess
         words_to_remove = []
 
         if result == "ggggg":
-            print_results(results)    # print shareable results
             break    # code cracked, exit program
 
         # iterate through each letter of the guessed word
@@ -242,34 +242,63 @@ def wordle_solve(infilename):
                 frequencies[letter] = 0
         all_words.set_values(frequencies)
         all_words.sort_by_value()
-    return
+        if len(results) > 10:
+            break
+
+    number = len(results) - 1
+    return number
 
 
-def print_results(results):
+def wordle(word, guess):
     """
-    Prints the Wordle-style shareable result of the game instance.
+    Gives the colour-based response to an word-guess pair, exactly how Wordle
+    itself would.
 
     Arguments:
-        results: list of integers and strings
-            data about the result of the game to print
+        word: string
+            secret word trying to be cracked
+        guess: string
+            word being guessed by the wordle solver
 
     Returns:
-        None, but prints data to standard out
+        result: string
+            string of colours to be interpreted by the solver
     """
 
-    print()    # intentional blank line
-    print("Share Results:")
-    print("Wordle {}/6".format(results[0]))    # print number of tries
-    print()    # intentional blank line
-    for index in range(results[0]):
-        for letter in results[index + 1]:
-            if letter == "g":
-                print("\U0001F7E9", end="")    # unicode for green square
-            elif letter == "y":
-                print("\U0001F7E8", end="")    # unicode for yellow square
-            elif letter == "b":
-                print("\U00002B1B", end="")    # unicode for black square
-        print()    # move to next line
+    result = ""
+    for index in range(len(guess)):
+        if guess[index] == word[index]:
+            result += "g"
+        elif guess[index] not in word:
+            result += "b"
+        else:
+            if guess.count(guess[index]) > word.count(guess[index]):
+                result += "b"
+            else:
+                result += "y"
+    return result
+
+
+def test(infilename1, infilename2):
+    """
+    Guesses the secret word according to input corresponding to the output of
+    the game Wordle.
+
+    Arguments:
+        infilename1: string
+            the name of the file containing all possible words
+        infilename2: string
+            the name of the file containing all words ton test on
+
+    Returns:
+        None, but tests the solver against all possible instances
+    """
+
+    with open(infilename1) as infile:
+        test_words = infile.read().split()
+    for word in test_words:
+        result = wordle_solve(word, infilename2)
+        print(result)
     return
 
 
@@ -278,27 +307,28 @@ def main():
     Solves an instance of the Wordle game based on input data.
 
     Arguments:
-        None, but reads the data of valid words from a specified file
+        None, but reads the data of valid and test words from specified files
 
     Returns:
         None, but calls the wordle solving function which continually prints
         words to try until the word is found
     """
 
-    # check that file is specified
-    if len(sys.argv) != 2:
+    # check that files are specified
+    if len(sys.argv) != 3:
         print("Error: no input file specified.",
-            "Proper Usage: python3 wordle_solver.py <filename>")
+            "Proper Usage: python3 wordle_solver.py <filename> <filename>")
         return
 
     # check that the specified file exists
-    infilename = sys.argv[1]
-    if not os.path.exists(infilename):
+    infilename1 = sys.argv[1]
+    infilename2 = sys.argv[2]
+    if not os.path.exists(infilename1) or not os.path.exists(infilename2):
         print("Error: input file specified does not exist.",
-            "Proper Usage: python3 wordle_solver.py <filename>")
+            "Proper Usage: python3 wordle_solver.py <filename> <filename>")
         return
 
-    wordle_solve(infilename)    # solve particular instance of the game
+    test(infilename1, infilename2)    # solve all instances of the game
     return
 
 

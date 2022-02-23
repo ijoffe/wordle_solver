@@ -28,3 +28,5 @@ Currently, the program can only be used directly through a terminal window. Now,
 ## Example Usage
 ```
 ```
+
+error checking, pass input, etc
