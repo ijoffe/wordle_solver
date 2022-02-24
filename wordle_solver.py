@@ -170,10 +170,11 @@ def wordle_solve(infilename):
         None, but continually prints words to try until the word is found
     """
 
-    valid_words = WordSet(infilename)
-    all_words = WordSet(infilename)
+    valid_words = WordSet(infilename)    # set of words that can be correct
+    all_words = WordSet(infilename)    # set of all possible valid words
     letters = {}    # dictionary of each letters count
     for letter in range(26):
+        # letter is assumed not present until proven otherwise
         letters[chr(ord("a") + letter)] = False
     results = [0]    # initialize number of guesses
     # keep guessing as long as the set of valid words is not empty
@@ -182,12 +183,13 @@ def wordle_solve(infilename):
             print("There was an error in the program.")
             break    # invalid input led to no words being left, exit program
 
-        print("Number of possible words:", len(valid_words.wordset))
+        # guess valuable words until set is narrowed down enough
         if len(valid_words.wordset) > len(all_words.wordset) / 500 + 1:
             test_word = all_words.wordset[0]["word"]
+        # guess a word that may be correct
         else:
             test_word = valid_words.wordset[0]["word"]
-            valid_words.wordset.pop(0)
+            valid_words.wordset.pop(0)    # never guess same word twice
 
         print("Now try:", test_word)    # tell user what to guess next
         result = input("Enter result: ")    # obtain response to the guess
@@ -202,7 +204,7 @@ def wordle_solve(infilename):
         # iterate through each letter of the guessed word
         for number in range(len(result)):
             if result[number] == "g":
-                letters[test_word[number]] = True
+                letters[test_word[number]] = True    # letter is present
                 # words are only valid with that letter in that exact spot
                 for index in range(len(valid_words.wordset)):
                     if valid_words.wordset[index]["word"][number] \
@@ -210,7 +212,7 @@ def wordle_solve(infilename):
                         words_to_remove.append(index)
 
             elif result[number] == "y":
-                letters[test_word[number]] = True
+                letters[test_word[number]] = True    # letter is present
                 # words are only valid with that letter, but not in that spot
                 for index in range(len(valid_words.wordset)):
                     if test_word[number] not in valid_words.wordset[index] \
@@ -237,10 +239,13 @@ def wordle_solve(infilename):
             if words_to_remove[index] != words_to_remove[index - 1]:
                 valid_words.wordset.pop(words_to_remove[index])
 
+        # find most common letters to eliminate in the possibly correct set
         frequencies = valid_words.count_frequencies()
         for letter in frequencies:
+            # letters that are already known to appear are not useful
             if letters[letter]:
                 frequencies[letter] = 0
+        # resort based on value inside the other set to best narrow down
         all_words.set_values(frequencies)
         all_words.sort_by_value()
     return

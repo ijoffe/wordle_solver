@@ -9,7 +9,7 @@
 * [Example Usage](#example-usage)
 
 ## General Information
-This repository contains code to solve the popular game Wordle. Some folders in this repository contain previous iterations of the algorihtm, but the best and most recent implmenetation is conatinde in the main directory. All code was created by me, Isaac Joffe, in February of 2022.
+This repository contains code to solve the popular game Wordle. Some folders in this repository contain previous iterations of the algorihtm, but the best and most recent implmentation is contained in the main directory. All code was created by me, Isaac Joffe, in February of 2022.
 
 ## Description
 The aim of this project is to create an algorithm that can successfully find the correct word in the game Wordle within the given number of attempts in all cases. This repository contains an algorithm that can successfully determine all words, and mostly in enough attempts.
