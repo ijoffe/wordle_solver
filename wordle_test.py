@@ -2,6 +2,7 @@
 
 import sys    # for command line arguments
 import os.path    # to check that file exists
+import time
 
 
 class WordSet():
@@ -185,10 +186,11 @@ def wordle_solve(word, infilename):
             print("There was an error in the program.")
             break    # invalid input led to no words being left, exit program
 
-        if len(valid_words.wordset) > len(all_words.wordset) / 500 + 1:
+        if len(valid_words.wordset) > len(all_words.wordset) / 1000 + 1:
             test_word = all_words.wordset[0]["word"]
         else:
             test_word = valid_words.wordset[0]["word"]
+            valid_words.wordset.pop(0)
 
         result = wordle(word, test_word)    # obtain response to the guess
         results[0] += 1    # one more guess has been entered
@@ -242,7 +244,7 @@ def wordle_solve(word, infilename):
                 frequencies[letter] = 0
         all_words.set_values(frequencies)
         all_words.sort_by_value()
-        if len(results) > 10:
+        if len(results) > 7:
             break
 
     number = len(results) - 1
@@ -294,11 +296,42 @@ def test(infilename1, infilename2):
         None, but tests the solver against all possible instances
     """
 
+    results = [0, 0, 0, 0, 0, 0, 0]
     with open(infilename1) as infile:
         test_words = infile.read().split()
+    total = 0
+    number = 0
+    wrong_words = []
+    start = time.time()
     for word in test_words:
+        number += 1
+        print("Algorithm solving instance {} of {}".format(number, len(test_words)))
         result = wordle_solve(word, infilename2)
-        print(result)
+        if result == 7:
+            wrong_words.append(word)
+            results[6] += 1
+        results[result - 1] += 1
+        total += result
+    end = time.time()
+    # print(results)
+    correct = 0
+    for number in range(len(results)):
+        # print("Algorithm took {} tries {} times".format(number + 1, results[number]))
+        if number < 6:
+            correct += results[number]
+    # print("Algorithm solved {} percent of cases".format(correct/len(test_words)*100))
+    # print("Algorithm took an average of {} tries".format(total/len(test_words)))
+    # print("Algorithm most often took {} tries".format(results.index(max(results)) + 1))
+    # print("Algorithm took an average time of {} seconds".format((end-start)/len(test_words)))
+    # print("Algorithm could not solve the following words:", ", ".join(wrong_words))
+
+    print("SOLVED {:.1f}% OF CASES".format(correct/len(test_words)*100))
+    print("TOOK AN AVERAGE OF {:.1f} ATTEMPTS".format(total/len(test_words)))
+    print("TOOK AN AVERAGE TIME OF {:.2f} SECONDS".format((end-start)/len(test_words)))
+    print("COULD NOT SOLVE THE FOLLOWING: {}".format(", ".join(wrong_words)))
+    print("HISTOGRAM:")
+    for index in range(len(results)):
+        print("{}: {}".format(index + 1, "X"*int(results[index]/max(results)*20)))
     return
 
 

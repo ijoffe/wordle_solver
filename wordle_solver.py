@@ -187,6 +187,7 @@ def wordle_solve(infilename):
             test_word = all_words.wordset[0]["word"]
         else:
             test_word = valid_words.wordset[0]["word"]
+            valid_words.wordset.pop(0)
 
         print("Now try:", test_word)    # tell user what to guess next
         result = input("Enter result: ")    # obtain response to the guess
