@@ -174,10 +174,11 @@ def wordle_solve(word, infilename):
             the number of guesses the solver took to solve the word
     """
 
-    valid_words = WordSet(infilename)
-    all_words = WordSet(infilename)
+    valid_words = WordSet(infilename)    # set of words that can be correct
+    all_words = WordSet(infilename)    # set of all possible valid words
     letters = {}    # dictionary of each letters count
     for letter in range(26):
+        # letter is assumed not present until proven otherwise
         letters[chr(ord("a") + letter)] = False
     results = [0]    # initialize number of guesses
     # keep guessing as long as the set of valid words is not empty
@@ -186,11 +187,13 @@ def wordle_solve(word, infilename):
             print("There was an error in the program.")
             break    # invalid input led to no words being left, exit program
 
-        if len(valid_words.wordset) > len(all_words.wordset) / 1000 + 1:
+        # guess valuable words until set is narrowed down enough
+        if len(valid_words.wordset) > len(all_words.wordset) / 500 + 1:
             test_word = all_words.wordset[0]["word"]
+        # guess a word that may be correct
         else:
             test_word = valid_words.wordset[0]["word"]
-            valid_words.wordset.pop(0)
+            valid_words.wordset.pop(0)    # never guess same word twice
 
         result = wordle(word, test_word)    # obtain response to the guess
         results[0] += 1    # one more guess has been entered
@@ -238,16 +241,17 @@ def wordle_solve(word, infilename):
             if words_to_remove[index] != words_to_remove[index - 1]:
                 valid_words.wordset.pop(words_to_remove[index])
 
+        # find most common letters to eliminate in the possibly correct set
         frequencies = valid_words.count_frequencies()
         for letter in frequencies:
+            # letters that are already known to appear are not useful
             if letters[letter]:
                 frequencies[letter] = 0
+        # re-sort based on value inside the other set to best narrow down
         all_words.set_values(frequencies)
         all_words.sort_by_value()
-        if len(results) > 7:
-            break
 
-    number = len(results) - 1
+    number = len(results) - 1     # amount of attempts required
     return number
 
 
@@ -267,6 +271,7 @@ def wordle(word, guess):
             string of colours to be interpreted by the solver
     """
 
+    # elementary implemmetation of basic wordle algorithm for testing
     result = ""
     for index in range(len(guess)):
         if guess[index] == word[index]:
@@ -274,6 +279,7 @@ def wordle(word, guess):
         elif guess[index] not in word:
             result += "b"
         else:
+            # may fail in some instances but seems to work
             if guess.count(guess[index]) > word.count(guess[index]):
                 result += "b"
             else:
@@ -295,36 +301,30 @@ def test(infilename1, infilename2):
     Returns:
         None, but tests the solver against all possible instances
     """
-
-    results = [0, 0, 0, 0, 0, 0, 0]
+    # number of times each amount of attempts is taken
+    results = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    # store all words to test on as a list
     with open(infilename1) as infile:
         test_words = infile.read().split()
-    total = 0
-    number = 0
-    wrong_words = []
-    start = time.time()
+    total = 0    # total number of attempts
+    number = 0    # index of word being tested
+    wrong_words = []    # list of all words that could not be solved
+    start = time.time()    # for timing each attempt
     for word in test_words:
         number += 1
         print("Algorithm solving instance {} of {}".format(number, len(test_words)))
         result = wordle_solve(word, infilename2)
-        if result == 7:
+        if result > 6:
             wrong_words.append(word)
-            results[6] += 1
         results[result - 1] += 1
         total += result
-    end = time.time()
-    # print(results)
+    end = time.time()    # for timing each attempt
     correct = 0
     for number in range(len(results)):
-        # print("Algorithm took {} tries {} times".format(number + 1, results[number]))
         if number < 6:
             correct += results[number]
-    # print("Algorithm solved {} percent of cases".format(correct/len(test_words)*100))
-    # print("Algorithm took an average of {} tries".format(total/len(test_words)))
-    # print("Algorithm most often took {} tries".format(results.index(max(results)) + 1))
-    # print("Algorithm took an average time of {} seconds".format((end-start)/len(test_words)))
-    # print("Algorithm could not solve the following words:", ", ".join(wrong_words))
 
+    # print information on total results
     print("SOLVED {:.1f}% OF CASES".format(correct/len(test_words)*100))
     print("TOOK AN AVERAGE OF {:.1f} ATTEMPTS".format(total/len(test_words)))
     print("TOOK AN AVERAGE TIME OF {:.2f} SECONDS".format((end-start)/len(test_words)))

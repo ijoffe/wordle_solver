@@ -39,7 +39,6 @@ class WordSet():
         """
 
         self.wordset = []
-        self.frequencies = {}
 
         # execute steps to build the serilaized data
         self.get_base_words(filename)
@@ -181,7 +180,7 @@ def wordle_solve(infilename):
     while(True):
         if not len(valid_words.wordset):
             print("There was an error in the program.")
-            break    # invalid input led to no words being left, exit program
+            break    # invalid input lead to no words being left, exit program
 
         # guess valuable words until set is narrowed down enough
         if len(valid_words.wordset) > len(all_words.wordset) / 500 + 1:
@@ -245,7 +244,7 @@ def wordle_solve(infilename):
             # letters that are already known to appear are not useful
             if letters[letter]:
                 frequencies[letter] = 0
-        # resort based on value inside the other set to best narrow down
+        # re-sort based on value inside the other set to best narrow down
         all_words.set_values(frequencies)
         all_words.sort_by_value()
     return
